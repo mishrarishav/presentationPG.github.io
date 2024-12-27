@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BTS Checklist</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .hidden {
+      display: none;
+    }
+    .checklist-container {
+      margin-top: 20px;
+      border: 1px solid #ccc;
+      padding: 15px;
+      border-radius: 5px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      font-weight: bold;
+    }
+    input[type="text"], select, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .btn {
+      padding: 10px 20px;
+      background-color: #007BFF;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h1>BTS Checklist</h1>
+
+  <form id="checklistForm">
+    <div class="form-group">
+      <label for="projectType">Select Project Type:</label>
+      <select id="projectType" required>
+        <option value="" disabled selected>Select Project Type</option>
+        <option value="1">Material Under Project</option>
+        <option value="2">Service Under Project</option>
+        <option value="3">Direct Material</option>
+        <option value="4">Direct Service</option>
+      </select>
+    </div>
+
+    <div id="checklistContainer" class="checklist-container hidden">
+      <h2>Checklist</h2>
+      <div id="checklistItems"></div>
+      <button type="submit" class="btn">Submit</button>
+    </div>
+  </form>
+
+  <script>
+    const checklistData = {
+      1: [
+        { id: 1, label: 'LoA and Amendments are Placed in file', type: 'checkbox', role: 'technical' },
+        { id: 2, label: 'Item included in LoA', type: 'checkbox', role: 'technical' },
+        { id: 3, label: 'Insurance clause', type: 'checkbox', role: 'technical' },
+        { id: 4, label: 'CPG Received and confirmed as per LOA value/amended contract value', type: 'checkbox', role: 'vendor' },
+        { id: 5, label: 'Invoices parking in SAP', type: 'text', role: 'finance' }
+      ],
+      2: [
+        { id: 6, label: 'Installation done', type: 'file', role: 'technical' },
+        { id: 7, label: 'Compliance of Labour Law', type: 'checkbox', role: 'vendor' }
+      ],
+      3: [
+        { id: 8, label: 'Is the Invoice Reflecting in GSTR-2B?', type: 'checkbox', role: 'finance' }
+      ],
+      4: [
+        { id: 9, label: 'Receipt of Services other than installation', type: 'file', role: 'vendor' }
+      ]
+    };
+
+    const projectTypeSelect = document.getElementById('projectType');
+    const checklistContainer = document.getElementById('checklistContainer');
+    const checklistItemsContainer = document.getElementById('checklistItems');
+    const checklistForm = document.getElementById('checklistForm');
+
+    projectTypeSelect.addEventListener('change', (event) => {
+      const selectedProjectType = event.target.value;
+      renderChecklist(selectedProjectType);
+    });
+
+    function renderChecklist(projectTypeId) {
+      checklistItemsContainer.innerHTML = ''; // Clear previous checklist items
+      const checklist = checklistData[projectTypeId];
+
+      if (checklist) {
+        checklist.forEach(item => {
+          const div = document.createElement('div');
+          div.className = 'form-group';
+          let inputField;
+
+          if (item.type === 'checkbox') {
+            inputField = `<input type="checkbox" id="item_${item.id}" />`;
+          } else if (item.type === 'text') {
+            inputField = `<input type="text" id="item_${item.id}" />`;
+          } else if (item.type === 'file') {
+            inputField = `<input type="file" id="item_${item.id}" />`;
+          }
+
+          div.innerHTML = `
+            <label for="item_${item.id}">${item.label}</label>
+            ${inputField}
+          `;
+          checklistItemsContainer.appendChild(div);
+        });
+
+        checklistContainer.classList.remove('hidden');
+      } else {
+        checklistContainer.classList.add('hidden');
+      }
+    }
+
+    checklistForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      alert('Checklist submitted successfully!');
+    });
+  </script>
+</body>
+</html>
